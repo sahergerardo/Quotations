@@ -9,8 +9,8 @@ class CoreModel(models.Model):
     class Meta:
         abstract = True
 
-#    def _str_(self):
-#        return str(self.id)
+    def _str_(self):
+        return str(self.id)
 
 
 class Address(CoreModel):
@@ -26,9 +26,6 @@ class Address(CoreModel):
     class Meta(CoreModel.Meta):
         abstract = True
 
-    def __str__(self):
-        return self.street
-
 
 class LegalPerson(Address):
     rfc = models.CharField(max_length=15, db_index=True)
@@ -37,8 +34,8 @@ class LegalPerson(Address):
     class Meta(CoreModel.Meta):
         abstract = True
 
-#    def _str_(self):
-#        return '{} - {}'.format(self.rfc, self.name)
+    def _str_(self):
+        return '{} - {}'.format(self.rfc, self.name)
 
 
 class Provider(LegalPerson):
@@ -63,8 +60,8 @@ class Provider(LegalPerson):
         verbose_name = 'Proveedor'
         verbose_name_plural = 'Proveedores'
 
-#    def _str_(self):
-#        return '{}'.format(self.name)
+    def _str_(self):
+        return '{}'.format(self.name)
 
 
 class Product(CoreModel):
@@ -78,8 +75,8 @@ class Product(CoreModel):
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
 
-#    def _str_(self):
-#        return f'{self.model} - {self.name} - {self.brand}'
+    def _str_(self):
+        return f'{self.model} - {self.name} - {self.brand}'
 
 
 class ProductProvider(CoreModel):

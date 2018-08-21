@@ -1,24 +1,14 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
+from main.models import Provider
 
 
 def index(request):
-    return HttpResponse("Index Example")
+    return render(request, 'main/login.html')
 
 
-def login_view(request):
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
-    user = authenticate(username=username, password=password)
-    if user is not None and user.is_active:
-        # Correct password, and the user is marked "active"
-        login(request, user)
-        # Redirect to a success page.
-        return HttpResponseRedirect("/account/loggedin/")
-    else:
-        # Show an error page
-        return HttpResponseRedirect("/account/invalid/")
-
-
-
+def providers_view(request):
+    providers = Provider.objects.all()
+    context = {'context': providers}
+    return render(request, 'main/providers.html', context)
