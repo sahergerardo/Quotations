@@ -1,3 +1,20 @@
+{% extends 'base/base.html' %}
 {% block content %}
- <h1>hola</h1>
+<table>
+ <tbody>
+ 	{% if providers %}
+ 	{% for provider in providers %}
+ 	<tr>
+ 		<td>{{ provider.contact_name }}</td>
+ 		<td>{{ provider.telephone1 }}</td>
+ 	</tr>
+ 	{% endfor %}
+ </tbody>
+ {% else %}
+  <h4> not exist providers</h4>
+ {% endif %}
+ </table>
+{% endblock %}
+{% block footer %}
+	<a href="/logout/" class="footer">Salir</a>
 {% endblock %}

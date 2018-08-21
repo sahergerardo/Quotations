@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<table>
+ <tbody>
+ 	{% if products %}
+ 	{% for product in products %}
+ 	<tr>
+ 		<td>{{ product.name }}</td>
+ 		<td>{{ product.brand }}</td>
+ 		<td>{{ product.description }}</td>
+ 	</tr>
+ 	{% endfor %}
+ </tbody>
+</table>
+ {% else %}
+  <h4> not exist providers</h4>
+ {% endif %}
+{% endblock %} 
