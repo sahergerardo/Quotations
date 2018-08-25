@@ -8,18 +8,23 @@
 			<td>Telefono principal</td>
 			<td>E-mail</td>
 			<td>Adeudo</td>
+			<td>Administrar</td>
 		</tr>
 
  </thead>
  <tbody>
- 	{% if providers %}
- 	{% for provider in providers %}
+ 	{% if object_list %}
+ 	{% for provider in object_list %}
  	<tr>
  		<td>{{ provider.id }}</td>
  		<td>{{ provider.contact_name }}</td>
   		<td>{{ provider.telephone1 }}</td>
   		<td>{{ provider.email }}</td>
   		<td>{{ provider.money_owed }}</td>
+  		<td>
+  			<a href="{% url 'provider-edit' provider.id %}" class="btn btn-primary">Editar</a>
+  			<a href="{% url 'provider-delete' provider.id %}" class="btn btn-danger">Eliminar</a> 
+  		</td>
  	</tr>
  	{% endfor %}
  </tbody>

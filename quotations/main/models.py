@@ -9,7 +9,7 @@ class CoreModel(models.Model):
     class Meta:
         abstract = True
 
-    def _str_(self):
+    def __str__(self):
         return str(self.id)
 
 
@@ -60,7 +60,7 @@ class Provider(LegalPerson):
         verbose_name = 'Proveedor'
         verbose_name_plural = 'Proveedores'
 
-    def _str_(self):
+    def __str__(self):
         return '{}'.format(self.name)
 
 
@@ -75,13 +75,17 @@ class Product(CoreModel):
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
 
-    def _str_(self):
-        return f'{self.model} - {self.name} - {self.brand}'
+    def __str__(self):
+        return '{}'.format(self.name)
 
 
 class ProductProvider(CoreModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    class Meta:
+        auto_created = True
+
 
 class Quotation(CoreModel):
     quantity = models.PositiveIntegerField(null=True)

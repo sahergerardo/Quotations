@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<table class="table table-bordered">
+	<thead>
+ 	<tr>
+			<td>#</td>
+			<td>cantidad</td>
+			<td>Producto</td>
+			<td>Activa</td>
+			<td>Enviar Cotización</td>
+		</tr>
+
+ </thead>
+ <tbody>
+ 	{% if object_list %}
+ 	{% for quotation in object_list %}
+ 	<tr>
+ 		<td>{{ quotation.id }}</td>
+ 		<td>{{ quotation.quantity }}</td>
+ 		<td>{{ quotation.product }}</td>
+ 		<td>{{ quotation.is_active }}</td>
+ 		<td> <a href="/quotations/{{ quotation.id }}">enviar cotizacion</a></td>
+
+ 	</tr>
+ 	{% endfor %}
+ </tbody>
+</table>
+ {% else %}
+  <h4> not exist providers</h4>
+ {% endif %}
+{% endblock %} 

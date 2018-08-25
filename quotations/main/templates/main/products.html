@@ -7,17 +7,22 @@
 			<td>Nombre</td>
 			<td>Marca</td>
 			<td>descripcion</td>
+			<td>Administrar</td>
 		</tr>
 
  </thead>
  <tbody>
- 	{% if products %}
- 	{% for product in products %}
+ 	{% if object_list %}
+ 	{% for product in object_list %}
  	<tr>
  		<td>{{ product.id }}</td>
  		<td>{{ product.name }}</td>
  		<td>{{ product.brand }}</td>
  		<td>{{ product.description }}</td>
+ 		<td>
+  			<a href="{% url 'product-edit' product.id %}" class="btn btn-primary">Editar</a>
+  			<a href="{% url 'product-delete' product.id %}" class="btn btn-danger">Eliminar</a> 
+  		</td>
  	</tr>
  	{% endfor %}
  </tbody>
