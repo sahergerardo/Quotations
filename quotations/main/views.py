@@ -5,12 +5,16 @@ from django.views.generic import CreateView, ListView
 from django.urls import reverse_lazy
 from main.forms import ProviderForm, ProductForm, QuotationForm
 from main.models import Provider, Product, Quotation
+from django.contrib.auth.decorators import user_passes_test
+
+# Dude: what is a difference betwen use @login_required and login_required(view)
 
 
 def index(request):
     return render(request, 'main/login.html')
 
 
+@user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def providers_create(request):
     if request.method == 'POST':
         form = ProviderForm(request.POST)
@@ -90,7 +94,7 @@ class CustomLogin(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
-            if user.
+            
 '''
 
 
