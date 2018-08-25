@@ -1,12 +1,25 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<table>
+<table class="table table-bordered">
+	<thead>
+ 	    <tr>
+			<td>#</td>
+			<td>Nombre de contacto</td>
+			<td>Telefono principal</td>
+			<td>E-mail</td>
+			<td>Adeudo</td>
+		</tr>
+
+ </thead>
  <tbody>
  	{% if providers %}
  	{% for provider in providers %}
  	<tr>
+ 		<td>{{ provider.id }}</td>
  		<td>{{ provider.contact_name }}</td>
- 		<td>{{ provider.telephone1 }}</td>
+  		<td>{{ provider.telephone1 }}</td>
+  		<td>{{ provider.email }}</td>
+  		<td>{{ provider.money_owed }}</td>
  	</tr>
  	{% endfor %}
  </tbody>

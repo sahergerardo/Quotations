@@ -82,3 +82,21 @@ class Product(CoreModel):
 class ProductProvider(CoreModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+class Quotation(CoreModel):
+    quantity = models.PositiveIntegerField(null=True)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return '{}'.format(self.product)
+
+
+class QuotationDetails(CoreModel):
+    quotation_ptr = models.ForeignKey(Quotation, on_delete=True)
+    provider = models.ForeignKey(Provider, on_delete=True)
+    price = models.DecimalField(max_digits=9, decimal_places=2,)
+    is_authorized = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} costo: '.format(self.price)
