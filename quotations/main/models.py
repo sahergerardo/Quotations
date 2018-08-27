@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class CoreModel(models.Model):
@@ -104,3 +105,14 @@ class QuotationDetails(CoreModel):
 
     def __str__(self):
         return '{} costo: '.format(self.price)
+
+'''
+class Custom_Permissions(User):
+
+    class Meta:
+        permissions = (
+            ("is_manager", "usuario Administrador"),
+            ("is_provider", "usuario Proveedor"),
+            ("is_applicant", "usuario Aplicante"),
+        )
+'''

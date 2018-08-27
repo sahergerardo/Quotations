@@ -14,4 +14,5 @@ urlpatterns = [
     path('products/delete/<int:id_product>/', login_required(views.product_delete), name='product-delete'),
     path('listall/', login_required(views.QuotationList.as_view()), name='quotations-list'),
     path('create/', login_required(views.quotations_create), name='quotations-create'),
+    path('main/', login_required(views.main), name='main'),
 ]

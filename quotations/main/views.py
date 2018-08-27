@@ -5,7 +5,7 @@ from django.views.generic import CreateView, ListView
 from django.urls import reverse_lazy
 from main.forms import ProviderForm, ProductForm, QuotationForm
 from main.models import Provider, Product, Quotation
-from django.contrib.auth.decorators import user_passes_test
+# from django.contrib.auth.decorators import user_passes_test
 
 # Dude: what is a difference betwen use @login_required and login_required(view)
 
@@ -14,7 +14,11 @@ def index(request):
     return render(request, 'main/login.html')
 
 
-@user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
+def main(request):
+    return render(request, 'main/main.html')
+
+
+# @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def providers_create(request):
     if request.method == 'POST':
         form = ProviderForm(request.POST)
@@ -26,6 +30,7 @@ def providers_create(request):
     return render(request, 'main/provider.html', {'form': form})
 
 
+# @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def provider_edit(request, id_provider):
     provider = Provider.objects.get(id=id_provider)
     if request.method == 'GET':
@@ -38,6 +43,7 @@ def provider_edit(request, id_provider):
     return render(request, 'main/provider.html', {'form': form})
 
 
+# @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def provider_delete(request, id_provider):
     provider = Provider.objects.get(id=id_provider)
     if request.method == 'POST':
@@ -46,6 +52,7 @@ def provider_delete(request, id_provider):
     return render(request, 'main/provider_delete.html', {'provider': provider})
 
 
+# @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def products_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -57,6 +64,7 @@ def products_create(request):
     return render(request, 'main/product.html', {'form': form})
 
 
+# @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def product_edit(request, id_product):
     product = Product.objects.get(id=id_product)
     if request.method == 'GET':
@@ -69,6 +77,7 @@ def product_edit(request, id_product):
     return render(request, 'main/product.html', {'form': form})
 
 
+# @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def product_delete(request, id_product):
     product = Product.objects.get(id=id_product)
     if request.method == 'POST':
@@ -77,6 +86,7 @@ def product_delete(request, id_product):
     return render(request, 'main/product_delete.html', {'product': product})
 
 
+# @user_passes_test(lambda u: u.groups.filter(name='Applicant').exists())
 def quotations_create(request):
     if request.method == 'POST':
         form = QuotationForm(request.POST)
@@ -87,15 +97,9 @@ def quotations_create(request):
         form = QuotationForm
     return render(request, 'main/quotation.html', {'form': form})
 
-'''
-class CustomLogin(FormView):
-    template_name = 'registration/login.html'
-    form_class = 'AuthenticationForm'
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
-            
-'''
+def is_Manager(user):
+    return user.groups.filter(name='Manager').exists()
 
 
 class RegistroUsuario(CreateView):
