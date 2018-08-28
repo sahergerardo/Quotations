@@ -11,7 +11,7 @@ class CoreModel(models.Model):
         abstract = True
 
     def __str__(self):
-        return str(self.id)
+        return f"{self.id}"
 
 
 class Address(CoreModel):
@@ -36,7 +36,7 @@ class LegalPerson(Address):
         abstract = True
 
     def _str_(self):
-        return '{} - {}'.format(self.rfc, self.name)
+        return f"{self.rfc} - {self.name}"
 
 
 class Provider(LegalPerson):
@@ -94,25 +94,23 @@ class Quotation(CoreModel):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return '{}'.format(self.product)
+        return '{product}'.format(product=self.product)
+
+    class Meta:
+
+        permissions = (
+            ('is_manager', 'Manager User'),
+            ('is_provider', 'provider User'),
+            ('is_applicant', 'applicant User'),
+        )
 
 
 class QuotationDetails(CoreModel):
-    quotation_ptr = models.ForeignKey(Quotation, on_delete=True)
-    provider = models.ForeignKey(Provider, on_delete=True)
+    quotation_ptr = models.ForeignKey(Quotation, on_delete=models.CASCADE)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=9, decimal_places=2,)
     is_authorized = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} costo: '.format(self.price)
 
-'''
-class Custom_Permissions(User):
-
-    class Meta:
-        permissions = (
-            ("is_manager", "usuario Administrador"),
-            ("is_provider", "usuario Proveedor"),
-            ("is_applicant", "usuario Aplicante"),
-        )
-'''

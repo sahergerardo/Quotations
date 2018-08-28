@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 from main.forms import ProviderForm, ProductForm, QuotationForm
 from main.models import Provider, Product, Quotation
-# from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 
 # Dude: what is a difference betwen use @login_required and login_required(view)
 
@@ -18,7 +19,6 @@ def main(request):
     return render(request, 'main/main.html')
 
 
-# @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
 def providers_create(request):
     if request.method == 'POST':
         form = ProviderForm(request.POST)
@@ -62,6 +62,19 @@ def products_create(request):
     else:
         form = ProductForm
     return render(request, 'main/product.html', {'form': form})
+
+
+class ProductMixin(LoginRequiredMixin):
+    model = Product
+    form_class = ProductForm
+
+
+class ProductCreateView(ProductMixin, CreateView):
+    success_url = reverse_lazy('main:products')
+
+
+class ProductUpdateView(ProductMixin, UpdateView):
+    success_url = reverse_lazy('main:products')
 
 
 # @user_passes_test(lambda u: u.groups.filter(name='Manager').exists())
@@ -111,7 +124,7 @@ class RegistroUsuario(CreateView):
 
 class ProviderList(ListView):
     model = Provider
-    template_name = 'main/providers.html'
+    # template_name = 'main/providers.html'
 
 
 class ProductList(ListView):

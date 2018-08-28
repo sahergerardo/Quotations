@@ -1,11 +1,33 @@
 {% extends 'base/base.html' %}
 {% block content %}
-  {% if user.is_authenticated and user.is_manager %}
+  {% if perms.main.is_manager %}
     <div class="list-group">
-    <h1>Productos</h1>
-    <a href="{% url 'products' %}" class="list-group-item">Ver Productos</a>
-  	<a href="#" class="list-group-item">Second item</a>
-  	<a href="#" class="list-group-item">Third item</a>
-</div>
+    	<h1>Productos</h1>
+    	<a href="{% url 'products' %}" class="list-group-item">Ver Productos</a>
+  		<a href="products-create" class="list-group-item">Agregar Producto</a>
+	</div>
+	<div class="list-group">
+    	<h1>Proveedores</h1>
+    	<a href="{% url 'providers' %}" class="list-group-item">Ver Proveedores</a>
+  		<a href="providers-create" class="list-group-item">Agregar Proveedor</a>
+	</div>
+	<div class="list-group">
+    	<h1>Cotizaciones</h1>
+    	<a href="{% url 'quotations-list' %}" class="list-group-item">Ver Ordenes de Compra</a>
+  		<a href="quotations-create" class="list-group-item">Crear Orden</a>
+	</div>
+  {% endif %}
+  {% if perms.main.is_provider %}
+  	<div class="list-group">
+    	<h1>Cotizaciones</h1>
+    	<a href="{% url 'quotations-list' %}" class="list-group-item">Ver Ordenes de Compra disponibles </a>
+	</div>
+  {% endif %}
+  {% if perms.main.is_applicant %}
+  	<div class="list-group">
+    	<h1>Crear Orden de Compra</h1>
+    	<a href="{% url 'quotations-list' %}" class="list-group-item">Ver Ordenes de Compra disponibles </a>
+    	<a href="{% url 'quotations-create' %}" class="list-group-item"> Crear Nueva Orden de Compra </a>
+	</div>
   {% endif %}
 {% endblock %}
