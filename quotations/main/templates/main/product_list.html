@@ -20,8 +20,8 @@
  		<td>{{ product.brand }}</td>
  		<td>{{ product.description }}</td>
  		<td>
-  			<a href="{% url 'product-edit' product.id %}" class="btn btn-primary">Editar</a>
-  			<a href="{% url 'product-delete' product.id %}" class="btn btn-danger">Eliminar</a> 
+  			<a href="{% url 'main:product-edit' product.id %}" class="btn btn-primary">Editar</a>
+  			<a href="{% url 'main:product-delete' product.id %}" class="btn btn-danger">Eliminar</a> 
   		</td>
  	</tr>
  	{% endfor %}

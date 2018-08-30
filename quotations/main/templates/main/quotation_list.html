@@ -18,8 +18,13 @@
  		<td>{{ quotation.id }}</td>
  		<td>{{ quotation.quantity }}</td>
  		<td>{{ quotation.product }}</td>
- 		<td>{{ quotation.is_active }}</td>
- 		<td> <a href="/quotations/{{ quotation.id }}">enviar cotizacion</a></td>
+ 		<td>{% if quotation.is_active  %}
+ 			Activa
+ 			{% else %}
+ 			Finalizada
+ 			{% endif %}
+ 		</td>
+ 		<td> <a href="{% url 'main:quotation-list' %}">enviar cotizacion</a></td>
 
  	</tr>
  	{% endfor %}

@@ -2,8 +2,8 @@
 {% block content %}
 <form method="post">
 	{% csrf_token %}
-	<h3>¿Realmente deseas eliminar el producto {{object.name_contact}}?</h3>
+	<h3>¿Realmente deseas eliminar la Cotizacion para {{object.product}}?</h3>
 	<button class="btn btn-danger" type="submit"> Eliminar</button>
-	<a class="btn btn-primary" href="{% url 'main:product-list' %}"> Cancelar</a>
+	<a class="btn btn-primary" href="{% url 'main:quotation-list' %}"> Cancelar</a>
 </form>
 {% endblock %}

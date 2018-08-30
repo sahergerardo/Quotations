@@ -22,8 +22,8 @@
   		<td>{{ provider.email }}</td>
   		<td>{{ provider.money_owed }}</td>
   		<td>
-  			<a href="{% url 'provider-edit' provider.id %}" class="btn btn-primary">Editar</a>
-  			<a href="{% url 'provider-delete' provider.id %}" class="btn btn-danger">Eliminar</a> 
+  			<a href="{% url 'main:provider-update' provider.id %}" class="btn btn-primary">Editar</a>
+  			<a href="{% url 'main:provider-delete' provider.id %}" class="btn btn-danger">Eliminar</a> 
   		</td>
  	</tr>
  	{% endfor %}

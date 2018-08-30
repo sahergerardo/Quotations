@@ -1,17 +1,18 @@
+from dal import autocomplete
 from django import forms
 from main.models import Product, Quotation, Provider
+from main.mixins import FormControlWidgetMixin
 
 
-class ProductForm(forms.ModelForm):
+class ProductForm(FormControlWidgetMixin, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+#        breakpoint()
 
     class Meta:
         model = Product
-        fields = [
-            'name',
-            'brand',
-            'description',
-            'providers',
-        ]
+        fields = '__all__'
 
         labels = {
             'name': 'Nombre',
@@ -21,22 +22,15 @@ class ProductForm(forms.ModelForm):
         }
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.TextInput(attrs={'class': 'form-control'}),
-            'providers': forms.CheckboxSelectMultiple(),
+            'providers': autocomplete.ModelSelect2Multiple(url='main:autocomplete-provider'),
         }
 
 
-class QuotationForm(forms.ModelForm):
+class QuotationForm(FormControlWidgetMixin, forms.ModelForm):
 
     class Meta:
         model = Quotation
-        fields = [
-            'quantity',
-            'product',
-            'is_active',
-        ]
+        fields = '__all__'
 
         labels = {
             'quantity': 'cantidad',
@@ -45,9 +39,7 @@ class QuotationForm(forms.ModelForm):
         }
 
         widgets = {
-            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
-            'product': forms.Select(attrs={'class': 'form-control'}),
-            'is_active': forms.NullBooleanSelect(attrs={'class': 'form-control'}),
+            'is_active': forms.NullBooleanSelect(attrs={'class': 'form-control', 'enabled': 'false'}),
         }
 
 
@@ -55,31 +47,7 @@ class ProviderForm(forms.ModelForm):
 
     class Meta:
         model = Provider
-        fields = [
-            'street',
-            'ext_no',
-            'int_no',
-            'colony',
-            'municipality',
-            'state',
-            'country',
-            'zipcode',
-            'rfc',
-            'name',
-            'bank_account_no',
-            'clabe',
-            'bank_name',
-            'telephone1',
-            'telephone2',
-            'telephone3',
-            'email',
-            'contact_name',
-            'website',
-            'region',
-            'credit',
-            'credit_days',
-            'money_owed',
-        ]
+        fields = '__all__'
 
         labels = {
             'street': 'calle',
@@ -132,3 +100,7 @@ class ProviderForm(forms.ModelForm):
             'credit_days': forms.NumberInput(attrs={'class': 'form-control'}),
             'money_owed': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+
+class QuotationDetailsForm(FormControlWidgetMixin, forms.ModelForm):
+    pass

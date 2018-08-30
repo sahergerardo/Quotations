@@ -2,8 +2,8 @@
 {% block content %}
 <form method="post">
 	{% csrf_token %}
-	<h3>¿Realmente deseas eliminar al provedor {{provider.name_contact}}?</h3>
+	<h3>¿Realmente deseas eliminar al provedor {{object.name_contact}}?</h3>
 	<button class="btn btn-danger" type="submit"> Eliminar</button>
-	<a class="btn btn-primary" href="{% url 'providers' %}"> Cancelar</a>
+	<a class="btn btn-primary" href="{% url 'main:provider-list' %}"> Cancelar</a>
 </form>
-{% endblock %}3
+{% endblock %}

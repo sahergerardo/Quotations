@@ -11,7 +11,7 @@ class CoreModel(models.Model):
         abstract = True
 
     def __str__(self):
-        return f"{self.id}"
+        return str(self.id)
 
 
 class Address(CoreModel):
@@ -35,8 +35,8 @@ class LegalPerson(Address):
     class Meta(CoreModel.Meta):
         abstract = True
 
-    def _str_(self):
-        return f"{self.rfc} - {self.name}"
+    def __str__(self):
+        return f"{self.rfc}-{self.name}"
 
 
 class Provider(LegalPerson):
@@ -62,14 +62,14 @@ class Provider(LegalPerson):
         verbose_name_plural = 'Proveedores'
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return f"{self.name}"
 
 
 class Product(CoreModel):
     name = models.CharField(blank=False, max_length=50)
     brand = models.CharField(blank=False, max_length=50)
     description = models.CharField(max_length=500)
-    providers = models.ManyToManyField(Provider, through='ProductProvider')
+    providers = models.ManyToManyField(Provider)
 #    product_type = models.ForeignKey(ProductType, on_delete=models.SET_NULL, null=True)
 
     class Meta:
@@ -77,24 +77,16 @@ class Product(CoreModel):
         verbose_name_plural = 'Productos'
 
     def __str__(self):
-        return '{}'.format(self.name)
-
-
-class ProductProvider(CoreModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
-
-    class Meta:
-        auto_created = True
+        return f"{self.name} - {self.brand}"
 
 
 class Quotation(CoreModel):
     quantity = models.PositiveIntegerField(null=True)
-    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return '{product}'.format(product=self.product)
+        return f"{str(self.quantity)} - {self.product}"
 
     class Meta:
 
@@ -106,11 +98,10 @@ class Quotation(CoreModel):
 
 
 class QuotationDetails(CoreModel):
-    quotation_ptr = models.ForeignKey(Quotation, on_delete=models.CASCADE)
+    quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=9, decimal_places=2,)
     is_authorized = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{} costo: '.format(self.price)
-
+        return f"{self.quotation} costo: {str(self.price)}"
