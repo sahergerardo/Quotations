@@ -53,6 +53,7 @@ class Provider(LegalPerson):
     credit = models.BooleanField(default=False)
     credit_days = models.PositiveIntegerField(null=True)
     money_owed = models.DecimalField(max_digits=19, decimal_places=2, default=Decimal('0'))
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 #    provider_type = models.ForeignKey(ProviderType)
     # This is the Company that owns the model object, not the Provider company
 #    company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -98,8 +99,8 @@ class Quotation(CoreModel):
 
 
 class QuotationDetails(CoreModel):
-    quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE)
-    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE, blank=True, null=True)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE, blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2,)
     is_authorized = models.BooleanField(default=False)
 

@@ -1,4 +1,8 @@
 {% extends 'base/base.html' %}
+{% block header %}
+	<h3>Productos</h3>
+	{% endblock %}
+
 {% block content %}
 <table class="table table-bordered">
 	<thead>
@@ -20,7 +24,7 @@
  		<td>{{ product.brand }}</td>
  		<td>{{ product.description }}</td>
  		<td>
-  			<a href="{% url 'main:product-edit' product.id %}" class="btn btn-primary">Editar</a>
+  			<a href="{% url 'main:product-update' product.id %}" class="btn btn-primary">Editar</a>
   			<a href="{% url 'main:product-delete' product.id %}" class="btn btn-danger">Eliminar</a> 
   		</td>
  	</tr>

@@ -1,6 +1,6 @@
 from dal import autocomplete
 from django import forms
-from main.models import Product, Quotation, Provider
+from main.models import Product, Quotation, Provider, QuotationDetails
 from main.mixins import FormControlWidgetMixin
 
 
@@ -39,12 +39,11 @@ class QuotationForm(FormControlWidgetMixin, forms.ModelForm):
         }
 
         widgets = {
-            'is_active': forms.NullBooleanSelect(attrs={'class': 'form-control', 'enabled': 'false'}),
+            'product': autocomplete.ModelSelect2(url='main:autocomplete-product')
         }
 
 
-class ProviderForm(forms.ModelForm):
-
+class ProviderForm(FormControlWidgetMixin, forms.ModelForm):
     class Meta:
         model = Provider
         fields = '__all__'
@@ -76,31 +75,46 @@ class ProviderForm(forms.ModelForm):
         }
 
         widgets = {
-            'street': forms.TextInput(attrs={'class': 'form-control'}),
-            'ext_no': forms.TextInput(attrs={'class': 'form-control'}),
-            'int_no': forms.TextInput(attrs={'class': 'form-control'}),
-            'colony': forms.TextInput(attrs={'class': 'form-control'}),
-            'municipality': forms.TextInput(attrs={'class': 'form-control'}),
-            'state': forms.TextInput(attrs={'class': 'form-control'}),
-            'country': forms.TextInput(attrs={'class': 'form-control'}),
-            'zipcode': forms.TextInput(attrs={'class': 'form-control'}),
-            'rfc': forms.TextInput(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'bank_account_no': forms.TextInput(attrs={'class': 'form-control'}),
-            'clabe': forms.TextInput(attrs={'class': 'form-control'}),
-            'bank_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'telephone1': forms.TextInput(attrs={'class': 'form-control'}),
-            'telephone2': forms.TextInput(attrs={'class': 'form-control'}),
-            'telephone3': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'contact_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'website': forms.TextInput(attrs={'class': 'form-control'}),
-            'region': forms.TextInput(attrs={'class': 'form-control'}),
             'credit': forms.NullBooleanSelect(attrs={'class': 'form-control'}),
-            'credit_days': forms.NumberInput(attrs={'class': 'form-control'}),
-            'money_owed': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 
 class QuotationDetailsForm(FormControlWidgetMixin, forms.ModelForm):
-    pass
+    class Meta:
+        model = QuotationDetails
+        fields = '__all__'
+
+        labels = {
+            'quotation': 'Cotizacion para:',
+            'provider': 'Proveedor',
+            'price': 'Precio Propuesto',
+            'is_authorized': '¿Autorizar?'
+        }
+
+
+class QuotationDetailsCreateForm(FormControlWidgetMixin, forms.ModelForm):
+
+    class Meta:
+        model = QuotationDetails
+        fields = '__all__'
+
+        labels = {
+            'quotation': 'Cotizacion para:',
+            'provider': 'Proveedor',
+            'price': 'Precio Propuesto',
+            'is_authorized': '¿Autorizar?'
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.provider_data = kwargs.pop('provider_data', None)
+        self.quotation_data = kwargs.pop('quotation_data', None)
+        super(QuotationDetailsForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        quotationdetails = super().save(commit=True,)
+        quotationdetails.provider = self.provider_data
+        print(self.provider_data)
+        quotationdetails.quotation = self.quotation_data
+        if commit:
+            quotationdetails.save()
+        return quotationdetails

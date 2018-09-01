@@ -16,9 +16,13 @@
 	  </div>
 	  <div class="list-group">
       	<h1>Cotizaciones</h1>
-    	  <a href="{% url 'main:quotation-list' %}" class="list-group-item">Ver Ordenes de Compra</a>
+    	  <a href="{% url 'main:quotation-list' %}" class="list-group-item">Ver Solicitudes</a>
   		  <a href="{% url 'main:quotation-create' %}" class="list-group-item">Crear Orden</a>
 	  </div>
+    <div class="list-group">
+        <h1>Cotizaciones</h1>
+        <a href="{% url 'main:quotationdetails-list' %}" class="list-group-item">Ver Cotizaciones de Proveedor</a>
+    </div>
     {% else %}
       {% if perms.main.is_provider %}
   	    <div class="list-group">

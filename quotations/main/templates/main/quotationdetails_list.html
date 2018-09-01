@@ -1,0 +1,41 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<table class="table table-bordered">
+	<thead>
+ 	<tr>
+			<td>#</td>
+			<td>Cotizacion</td>
+			<td>Proveedor</td>
+			<td>Precio</td>
+			<td>Administrar</td>
+		</tr>
+
+ </thead>
+ <tbody>
+ 	{% if object_list %}
+ 	{% for quotation_details in object_list %}
+ 	<h1>{{quotations_details.quotation.is_active}}</h1>
+ 	{% if not quotations_details.quotation.is_active %}
+ 	<tr>
+ 		<td>{{ quotation_details.id }}</td>
+ 		<td>{{ quotation_details.quotation }}</td>
+ 		<td>{{ quotation_details.provider }}</td>
+ 		<td>{{ quotation_details.price }}</td>
+ 		<td>
+ 			{%  if perms.main.is_manager %}
+              <a href="{% url 'main:quotationdetails-authorize' quotation_details.id %}" class="btn btn-primary">Autorizar</a>
+ 			{% else %}
+  			  <a href="{% url 'main:quotationdetails-update' quotation_details.id%}" class="btn btn-primary">Editar</a>
+  			  <a href="{% url 'main:quotationdetails-delete' quotation_details.id%}" class="btn btn-danger">Eliminar</a> 
+  			{% endif %}
+  		</td>
+ 	</tr>
+ 	{% endif %}
+ 	{% endfor %}
+ </tbody>
+</table>
+ {% else %}
+  <h4> not exist providers</h4>
+ {% endif %}
+ {% endblock %} }
+}

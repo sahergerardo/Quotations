@@ -7,13 +7,18 @@
 			<td>cantidad</td>
 			<td>Producto</td>
 			<td>Activa</td>
-			<td>Enviar Cotización</td>
+		{% if perms.main.is_manager or perms.main.is_applicant %}	
+			<td>Administrar</td>
+		{% else %}
+		    <td>Enviar Cotización</td>
+		{% endif %}
 		</tr>
 
  </thead>
  <tbody>
  	{% if object_list %}
  	{% for quotation in object_list %}
+ 	{% if perms.main.is_manager or perms.main.is_applicant %}
  	<tr>
  		<td>{{ quotation.id }}</td>
  		<td>{{ quotation.quantity }}</td>
@@ -24,9 +29,25 @@
  			Finalizada
  			{% endif %}
  		</td>
- 		<td> <a href="{% url 'main:quotation-list' %}">enviar cotizacion</a></td>
-
+ 		<td>
+  			<a href="{% url 'main:quotation-update' quotation.id %}" class="btn btn-primary">Editar</a>
+  			<a href="{% url 'main:quotation-delete' quotation.id %}" class="btn btn-danger">Eliminar</a> 
+  		</td>
  	</tr>
+ 		{% else %}
+ 		  {% if perms.main.is_provider%}
+ 		    {% if quotation.is_active  %}
+ 		    <tr>
+ 		      <td>{{ quotation.id }}</td>
+ 		      <td>{{ quotation.quantity }}</td>
+ 		      <td>{{ quotation.product }}</td>
+ 		      <td>Disponible</td>
+ 		      <td> <a href="{% url 'main:quotationdetails-create' quotation.id %}">Realizar Propuesta</a></td>
+ 		    </tr>
+ 		  {% endif %}  
+ 		  {% endif %}
+    {% endif %}
+ 	
  	{% endfor %}
  </tbody>
 </table>

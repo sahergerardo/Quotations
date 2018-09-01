@@ -1,0 +1,9 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<form method="post">
+	{% csrf_token %}
+	<h3>¿Realmente deseas eliminar la Cotizacion para {{object.quotation}}?</h3>
+	<button class="btn btn-danger" type="submit"> Eliminar</button>
+	<a class="btn btn-primary" href="{% url 'main:quotation-list' %}"> Cancelar</a>
+</form>
+{% endblock %}

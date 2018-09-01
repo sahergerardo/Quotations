@@ -1,13 +1,14 @@
 {% extends 'base/base.html' %}
-{% block header %}
-	<h3>Productos</h3>
-	{% endblock %}
 {% block content %}
-
 <form method="post">
 	{% csrf_token %}
-	{{ form.as_table }}
+	<p>Cotizacion para</p>
+	{{ form.quotation_data }} 
+	<p><br>Provedor:</p>
+	{{form.provider_data}}
+	<p><br>Precio Propuesto</p>
+	{{ form.price}}
 	<button type="submit"> Guardar</button>
+    
 </form>
- {{ form.media }}
 {% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<form method="post">
+	{% csrf_token %}
+	<h3>¿Estas Seguro de autorizar la cotizacion para {{data.quotation.product}} del proveedor {{data.provider}} por {{data.price}}?</h3>
+	<button class="btn btn-success" type="submit"> Autorizar</button>
+	<a class="btn btn-info" href="{% url 'main:provider-list' %}"> Cancelar</a>
+</form>
+{% endblock %}
