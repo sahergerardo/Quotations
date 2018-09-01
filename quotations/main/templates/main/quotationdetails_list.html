@@ -14,8 +14,7 @@
  <tbody>
  	{% if object_list %}
  	{% for quotation_details in object_list %}
- 	<h1>{{quotations_details.quotation.is_active}}</h1>
- 	{% if not quotations_details.quotation.is_active %}
+ 	{% if quotation_details.quotation.is_active %}
  	<tr>
  		<td>{{ quotation_details.id }}</td>
  		<td>{{ quotation_details.quotation }}</td>

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from main.forms import ProviderForm, ProductForm, QuotationForm, QuotationDetailsForm, QuotationDetailsCreateForm
 from main.mixins import AutocompleteRenderMixin
 from main.models import Provider, Product, Quotation, QuotationDetails
@@ -169,7 +169,7 @@ def quotation_authorize(request, id_quotation_details):
         quotation = Quotation.objects.get(id=quotation_details.quotation.id)
         quotation.is_active = False
         quotation.save()
-        return reverse_lazy('main:quotationlist')
+        return HttpResponseRedirect(reverse_lazy('main:quotationdetails-list'))
     return render(request, 'main/authorized.html', {'data': quotation_details})
 
 
