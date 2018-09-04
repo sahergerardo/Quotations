@@ -7,12 +7,11 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from main.forms import ProviderForm, ProductForm, QuotationForm, QuotationDetailsForm, QuotationDetailsCreateForm
-from main.mixins import AutocompleteRenderMixin
+from main.mixins import AutocompleteRenderMixin, ManagerRequiredMixin, ApplicantOrManagerRequiredMixin
 from main.models import Provider, Product, Quotation, QuotationDetails
 from django.contrib.auth.decorators import login_required
 
 # Functions
-
 
 
 class ProviderAutocompleteView(AutocompleteRenderMixin, LoginRequiredMixin, autocomplete.Select2QuerySetView):
@@ -26,6 +25,7 @@ class ProviderAutocompleteView(AutocompleteRenderMixin, LoginRequiredMixin, auto
             result = Provider.objects.filter(
                 name__istartswith=self.q).order_by('name')
         return result
+
 
 class ProductAutocompleteView(AutocompleteRenderMixin, LoginRequiredMixin, autocomplete.Select2QuerySetView):
 
@@ -50,7 +50,7 @@ def main(request):
 
 
 # Products Views
-class ProductMixin(LoginRequiredMixin):
+class ProductMixin(ManagerRequiredMixin):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('main:product-list')
@@ -73,7 +73,7 @@ class ProductDeleteView(ProductMixin, DeleteView):
 
 
 # Providers Views
-class ProviderMixin(LoginRequiredMixin):
+class ProviderMixin(ManagerRequiredMixin):
     model = Provider
     form_class = ProviderForm
     success_url = reverse_lazy('main:provider-list')
@@ -102,7 +102,7 @@ class QuotationMixin(LoginRequiredMixin):
     success_url = reverse_lazy('main:quotation-list')
 
 
-class QuotationCreateView(QuotationMixin, CreateView):
+class QuotationCreateView(ApplicantOrManagerRequiredMixin, QuotationMixin, CreateView):
     pass
 
 
@@ -110,11 +110,11 @@ class QuotationListview(QuotationMixin, ListView):
     pass
 
 
-class QuotationUpdateView(QuotationMixin, UpdateView):
+class QuotationUpdateView(ApplicantOrManagerRequiredMixin, QuotationMixin, UpdateView):
     pass
 
 
-class QuotationDeleteView(QuotationMixin, DeleteView):
+class QuotationDeleteView(ApplicantOrManagerRequiredMixin, QuotationMixin, DeleteView):
     template_name = 'main/quotation_delete.html'
 
 
@@ -177,4 +177,4 @@ class RegistroUsuario(LoginRequiredMixin, CreateView):
     model = User
     template_name = 'registration/create_user.html'
     form_class = UserCreationForm
-    success_url = reverse_lazy('main:provider-list')
+    success_url = reverse_lazy('main:main')

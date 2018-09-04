@@ -1,40 +1,54 @@
 {% extends 'base/base.html' %}
 {% block header %}
-  <h3>Bienvenido {{ user.username }} </h3>
+  <center>
+    <h4 class="text-info">Bienvenido {{ user.username }} </h4>
+  </center>
   {% endblock %}
 {% block content %}
   {% if perms.main.is_manager %}
-     <div class="list-group">
-      	<h1>Productos</h1>
-      	<a href="{% url 'main:product-list' %}" class="list-group-item">Ver Productos</a>
-  		  <a href="{% url 'main:product-create' %}" class="list-group-item">Agregar Producto</a>
+  <div class="list-group">
+     <center>
+     <div class="card text-white bg-primary mb-3" style="max-width: 50rem;">
+      	<div class="card-header">Productos</div>
+      	<a href="{% url 'main:product-list' %}" class="list-group-item list-group-item-action">Ver Productos</a>
+  		  <a href="{% url 'main:product-create' %}" class="list-group-item list-group-item-action">Agregar Producto</a>
 	  </div>
-	  <div class="list-group">
-      	<h1>Proveedores</h1>
+    </center>
+    <center>
+	  <div class="card text-white bg-primary mb-3" style="max-width: 50rem;">
+        <div class="card-header">Proveedores</div>
     	  <a href="{% url 'main:provider-list' %}" class="list-group-item">Ver Proveedores</a>
   		  <a href="{% url 'main:provider-create' %}" class="list-group-item">Agregar Proveedor</a>
 	  </div>
-	  <div class="list-group">
-      	<h1>Cotizaciones</h1>
+    </center>
+    <center>
+	  <div class="card text-white bg-primary mb-3" style="max-width: 50rem;">
+      	<div class="card-header">Solicitudes</div>
     	  <a href="{% url 'main:quotation-list' %}" class="list-group-item">Ver Solicitudes</a>
-  		  <a href="{% url 'main:quotation-create' %}" class="list-group-item">Crear Orden</a>
+  		  <a href="{% url 'main:quotation-create' %}" class="list-group-item">Crear Solicitud</a>
 	  </div>
-    <div class="list-group">
-        <h1>Cotizaciones</h1>
+    </center>
+    <center>
+    <div class="card text-white bg-primary mb-3"style="max-width: 50rem;">
+        <div class="card-header">Cotizaciones</div>
         <a href="{% url 'main:quotationdetails-list' %}" class="list-group-item">Ver Cotizaciones de Proveedor</a>
     </div>
+  </div>
     {% else %}
       {% if perms.main.is_provider %}
-  	    <div class="list-group">
-    	    <h1>Cotizaciones</h1>
-    	    <a href="{% url 'main:quotation-list' %}" class="list-group-item">Ver Ordenes de Compra disponibles </a>
-	    </div>
+        <center>
+  	    <div class="card text-white bg-primary mb-3" style="max-width: 50rem;">
+    	    <div class="card-header">Solicitudes</div>
+    	    <a href="{% url 'main:quotation-list' %}" class="list-group-item">Ver Solicitudes disponibles </a>
+	      </div>
+        </center>
       {%else%}
           {% if perms.main.is_applicant %}
-  	        <div class="list-group">
-    	        <h1>Crear Orden de Compra</h1>
-    	        <a href="{% url 'main:quotation-list' %}" class="list-group-item">Ver Ordenes de Compra disponibles </a>
-    	        <a href="{% url 'main:quotation-create' %}" class="list-group-item"> Crear Nueva Orden de Compra </a>
+            <center>
+  	        <div class="card text-white bg-primary mb-3" style="max-width: 50rem;">
+    	        <h1>Ordenes de Compra</h1>
+    	        <a href="{% url 'main:quotation-list' %}" class="list-group-item">Ver Solicitudes disponibles </a>
+    	        <a href="{% url 'main:quotation-create' %}" class="list-group-item"> Crear Nueva Solicitud de Compra </a>
 	          </div>
           {% else %}
   	        <h2>Login required</h2>

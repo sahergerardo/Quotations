@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.forms import RadioSelect
 from django.http import JsonResponse
 
@@ -23,3 +24,14 @@ class FormControlWidgetMixin(object):
                 self.fields[fname].widget.attrs.update({'disabled': 'true'})
             else:
                 self.fields[fname].widget.attrs.update({'class': 'form-control'})
+
+
+class ManagerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.has_perm('main.is_manager')
+
+
+class ApplicantOrManagerRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.has_perm('main.is_applicant') or self.request.user.has_perm('main.is_manager')
+
