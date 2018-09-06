@@ -1,38 +1,84 @@
 {% extends 'base/base.html' %}
 {% block header %}
-	<h3>Productos</h3>
-	{% endblock %}
-
+   <h3>Productos</h3>
+{% endblock %}
 {% block content %}
-<table class="table table-bordered">
-	<thead>
- 	<tr>
-			<td>#</td>
-			<td>Nombre</td>
-			<td>Marca</td>
-			<td>descripcion</td>
-			<td>Administrar</td>
-		</tr>
+    <form method="GET" autocomplete="off">
+    	{% csrf_token %}
+    <div class="form-group row">
+    <label class=col-1 col-form-label" for="textSearch">Buscar</label>
+    <input id="search" name="name" type="text" class="form-control col-6" id="textSearch" placeholder="nombre">
+    <label>________</label>
+    <a href="{% url 'main:product-create' %}"><input type="button" value="Crear nuevo" class="btn btn-success"></a>
 
- </thead>
- <tbody>
- 	{% if object_list %}
- 	{% for product in object_list %}
- 	<tr>
- 		<td>{{ product.id }}</td>
- 		<td>{{ product.name }}</td>
- 		<td>{{ product.brand }}</td>
- 		<td>{{ product.description }}</td>
- 		<td>
-  			<a href="{% url 'main:product-update' product.id %}" class="btn btn-primary">Editar</a>
-  			<a href="{% url 'main:product-delete' product.id %}" class="btn btn-danger">Eliminar</a> 
-  		</td>
- 	</tr>
- 	{% endfor %}
- </tbody>
-</table>
- {% else %}
-  <h4> not exist providers</h4>
- {% endif %}
- {% endblock %} }
-}
+  </div>
+  	</form>
+    <table id='table' class='table table-bordered'>
+	    <thead>
+ 	        <tr>
+			    <td>#</td>
+			    <td>Nombre</td>
+			    <td>Marca</td>
+			    <td>descripcion</td>
+			    <td>Administrar</td>
+		    </tr>
+        </thead>
+        <tbody>
+ 	    {% if object_list %}
+ 	    {% for product in object_list %}
+ 	        <tr id="{{product.id}}" class='tr-product'>
+ 		        <td>{{ product.id }}</td>
+ 		        <td>{{ product.name }}</td>
+ 		        <td>{{ product.brand }}</td>
+ 		        <td>{{ product.description }}</td>
+ 		        <td>
+  			        <a href="{% url 'main:product-update' product.id %}" class="btn btn-primary">Editar</a>
+  			        <a href="{% url 'main:product-delete' product.id %}" class="btn btn-danger">Eliminar</a> 
+  		        </td>
+ 	        </tr>
+ 	    {% endfor %}
+        </tbody>
+    </table>
+        <h4 id='no-exist' style='display:none;'>ningun producto concuerda con tu busqueda</h4>
+        {% else %}
+            <h4> </h4>
+        {% endif %}
+    <script>
+        $("#search").keyup(function() {
+            let qs = $("#search").val()
+            $.ajax({
+                url: '{% url "main:product-ajax" %}',
+                type: 'GET',
+                dataType: 'json',
+                data: {"qs":qs},
+            })
+            .done(function(data) {
+            if(jQuery.isEmptyObject(data)){
+            	$('#no-exist').show();
+            	$('.tr-product').hide();
+            }else{
+            	$('#no-exist').hide();
+            	$('.tr-product').hide();
+            	for(let i of data){
+                    $('#'+i['id']).show();
+                    newtable(data);
+                }
+            }
+        })
+        .fail(function() {
+            console.log("error");
+        })
+        .always(function() {
+            console.log("complete");
+        });
+        });
+
+    function newtable(data){
+    	//console.log(data[0]['name']);
+    }
+    </script>
+ {% endblock %} 
+
+
+
+

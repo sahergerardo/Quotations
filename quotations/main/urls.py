@@ -30,9 +30,10 @@ urlpatterns = [
         path('authorize/<int:id_quotation_details>/', views.quotation_authorize, name='quotationdetails-authorize'),
     ])),
     path('autocomplete/', include([
-        path('provider', views.ProviderAutocompleteView.as_view(),
+        path('provider/', views.ProviderAutocompleteView.as_view(),
              name='autocomplete-provider'),
-        path('product', views.ProductAutocompleteView.as_view(),
+        path('product/', views.ProductAutocompleteView.as_view(),
              name='autocomplete-product'),
     ])),
+    path('products.json', views.list_product, name='product-ajax'),
 ]

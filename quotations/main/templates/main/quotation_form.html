@@ -6,7 +6,9 @@
 	{{ form.quantity }}
 	<p>Producto</p>
 	{{ form.product}}
-	{{form.is_active}}
+	<div style='display:none;'>
+		{{form.is_active}}
+	</div>
 	<button type="submit"> Guardar</button>
 </form>
 {{ form.media }}

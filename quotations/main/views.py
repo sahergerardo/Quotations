@@ -3,13 +3,16 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.core import serializers
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from main.forms import ProviderForm, ProductForm, QuotationForm, QuotationDetailsForm, QuotationDetailsCreateForm
 from main.mixins import AutocompleteRenderMixin, ManagerRequiredMixin, ApplicantOrManagerRequiredMixin
 from main.models import Provider, Product, Quotation, QuotationDetails
 from django.contrib.auth.decorators import login_required
+import time
+import json
 
 # Functions
 
@@ -178,3 +181,18 @@ class RegistroUsuario(LoginRequiredMixin, CreateView):
     template_name = 'registration/create_user.html'
     form_class = UserCreationForm
     success_url = reverse_lazy('main:main')
+
+
+@login_required
+def list_product(request):
+    if request.is_ajax():
+        q = request.GET.get('qs', '').capitalize()
+        search_qs = Product.objects.filter(name__startswith=q)
+        results = []
+        for r in search_qs:
+            results.append({'id': r.id})
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
