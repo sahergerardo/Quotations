@@ -1,8 +1,51 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base.html' %} {% load formset_tags %}
 {% block content %}
-<form method="post">
+{% if formset %}
+	<form name="data-form" action="" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div id="formset" data-formset-prefix="{{ formset.prefix }}">
+            {{ formset.management_form }}
+            <div data-formset-body enctype="multipart/form-data">
+                <!-- New forms will be inserted in here -->
+                {% for form in formset %}
+                
+                    <div enctype="multipart/form-data">
+                        <div data-formset-form enctype="multipart/form-data">
+                        	{{ form }} 
+                        <a data-formset-delete-button>Delete form</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <script type="form-template" data-formset-empty-form>
+                {% escapescript %}
+                <div enctype="multipart/form-data">
+                <div data-formset-form enctype="multipart/form-data">                    
+                    {{ formset.empty_form }}
+                </div>
+                </div>
+                {% endescapescript %}
+            </script>
+            <!-- This button will add a new form when clicked -->
+            <input type="button" value="Add another" data-formset-add>
+            <script>
+            jQuery(function($) {
+                $("#formset").formset({
+                    animateForms: true,
+                    reorderMode: 'dom',
+                });
+            });
+            </script>
+        </div>
+        {{formset.media}}
+        <button type="submit"> Guardar</button>
+	</form>
+{% else %}
+<form method="post" enctype="multipart/form-data">
 	{% csrf_token %}
-	{{ form.as_p }}
+	{{ form.as_table }}
 	<button type="submit"> Guardar</button>
 </form>
+ {{ form.media }}
+{% endif %}
 {% endblock %}

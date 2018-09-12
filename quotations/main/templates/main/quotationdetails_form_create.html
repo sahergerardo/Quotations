@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 	{% csrf_token %}
 	<p>Cotizacion para</p>
 	{{ form.quotation_data }} 
@@ -8,6 +8,8 @@
 	{{form.provider_data}}
 	<p><br>Precio Propuesto</p>
 	{{ form.price}}
+	<p><br>añadir archivo (opcional)</p>
+	<p>{{ form.docfile}}</p>
 	<button type="submit"> Guardar</button>
     
 </form>

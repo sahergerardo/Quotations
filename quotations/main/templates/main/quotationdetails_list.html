@@ -7,6 +7,7 @@
 			<td>Cotizacion</td>
 			<td>Proveedor</td>
 			<td>Precio</td>
+      <td>Archivo</td>
 			<td>Administrar</td>
 		</tr>
 
@@ -14,22 +15,28 @@
  <tbody>
  	{% if object_list %}
  	{% for quotation_details in object_list %}
- 	{% if quotation_details.quotation.is_active %}
  	<tr>
  		<td>{{ quotation_details.id }}</td>
  		<td>{{ quotation_details.quotation }}</td>
  		<td>{{ quotation_details.provider }}</td>
  		<td>{{ quotation_details.price }}</td>
+    <td>{% if quotation_details.docfile %}
+    <a href="{{ quotation_details.docfile.url }}">{{quotation_details.filename}}</a>
+    {% endif %}
+    </td>
  		<td>
- 			{%  if perms.main.is_manager %}
+ 			{%  if perms.main.is_manager and quotation_details.quotation.is_active %}
               <a href="{% url 'main:quotationdetails-authorize' quotation_details.id %}" class="btn btn-primary">Autorizar</a>
  			{% else %}
+ 			  {% if quotation_details.quotation.is_active %}
   			  <a href="{% url 'main:quotationdetails-update' quotation_details.id%}" class="btn btn-primary">Editar</a>
   			  <a href="{% url 'main:quotationdetails-delete' quotation_details.id%}" class="btn btn-danger">Eliminar</a> 
+  			  {% else %}
+  			  <p>Finalizada</p>
+  			 {% endif %}
   			{% endif %}
   		</td>
  	</tr>
- 	{% endif %}
  	{% endfor %}
  </tbody>
 </table>

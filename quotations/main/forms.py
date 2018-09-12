@@ -88,8 +88,18 @@ class QuotationDetailsForm(FormControlWidgetMixin, forms.ModelForm):
             'quotation': 'Cotizacion para:',
             'provider': 'Proveedor',
             'price': 'Precio Propuesto',
-            'is_authorized': '¿Autorizar?'
+            'is_authorized': '¿Autorizar?',
+            'filename': 'nombre para el archivo (opcional)',
+            'docfile': 'archivo (opcional)',
         }
+
+        widgets = {
+            'quotation': autocomplete.ModelSelect2(url='main:autocomplete-quotation'),
+            'provider': autocomplete.ModelSelect2(url='main:autocomplete-provider'),
+        }
+
+
+QuotationDetailsFormset = forms.formset_factory(QuotationDetailsForm, can_delete=True)
 
 
 class QuotationDetailsCreateForm(FormControlWidgetMixin, forms.ModelForm):
@@ -115,6 +125,7 @@ class QuotationDetailsCreateForm(FormControlWidgetMixin, forms.ModelForm):
         quotationdetails.provider = self.provider_data
         print(self.provider_data)
         quotationdetails.quotation = self.quotation_data
+        quotationdetails.filename = f"{self.provider_data.name}_{self.quotation_data}"
         if commit:
             quotationdetails.save()
         return quotationdetails

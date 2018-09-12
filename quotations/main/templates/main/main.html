@@ -32,10 +32,11 @@
     <div class="card text-white bg-primary mb-3"style="max-width: 50rem;">
         <div class="card-header">Cotizaciones</div>
         <a href="{% url 'main:quotationdetails-list' %}" class="list-group-item">Ver Cotizaciones de Proveedor</a>
+        <a href="{% url 'main:quotationdetails-create-many' %}" class="list-group-item">Agregar cotizaciones a proveedor</a>
     </div>
   </div>
     {% else %}
-      {% if perms.main.is_provider %}
+      {% if perms.main.is_provider %} 
         <center>
   	    <div class="card text-white bg-primary mb-3" style="max-width: 50rem;">
     	    <div class="card-header">Solicitudes</div>

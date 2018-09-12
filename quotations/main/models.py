@@ -102,6 +102,8 @@ class QuotationDetails(CoreModel):
     quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE, blank=True, null=True)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2,)
+    filename = models.CharField(max_length=100, blank=True, null=True)
+    docfile = models.FileField(upload_to='documents/%Y/%m/%d', blank=True, null=True)
     is_authorized = models.BooleanField(default=False)
 
     def __str__(self):

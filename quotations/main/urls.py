@@ -1,6 +1,7 @@
 from django.urls import path, include
 from . import views
 
+
 app_name = 'main'
 urlpatterns = [
     path('main/', views.main, name='main'),
@@ -25,6 +26,7 @@ urlpatterns = [
     path('quotationdetails/', include([
         path('list/', views.QuotationDetailsListView.as_view(), name='quotationdetails-list'),
         path('create/<int:pk>', views.QuotationDetailsCreateView.as_view(), name='quotationdetails-create'),
+        path('create/', views.QuotationDetailsCreateManyView.as_view(), name='quotationdetails-create-many'),
         path('update/<int:pk>/', views.QuotationDetailsUpdateView.as_view(), name='quotationdetails-update'),
         path('delete/<int:pk>/', views.QuotationDetailsDeleteView.as_view(), name='quotationdetails-delete'),
         path('authorize/<int:id_quotation_details>/', views.quotation_authorize, name='quotationdetails-authorize'),
@@ -34,6 +36,9 @@ urlpatterns = [
              name='autocomplete-provider'),
         path('product/', views.ProductAutocompleteView.as_view(),
              name='autocomplete-product'),
+        path('quotation/', views.QuotationAutocompleteView.as_view(),
+             name='autocomplete-quotation'),
     ])),
     path('products.json', views.list_product, name='product-ajax'),
 ]
+

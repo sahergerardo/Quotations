@@ -7,7 +7,7 @@ from django.core import serializers
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from main.forms import ProviderForm, ProductForm, QuotationForm, QuotationDetailsForm, QuotationDetailsCreateForm
+from main.forms import ProviderForm, ProductForm, QuotationForm, QuotationDetailsForm, QuotationDetailsCreateForm, QuotationDetailsFormset
 from main.mixins import AutocompleteRenderMixin, ManagerRequiredMixin, ApplicantOrManagerRequiredMixin
 from main.models import Provider, Product, Quotation, QuotationDetails
 from django.contrib.auth.decorators import login_required
@@ -40,6 +40,19 @@ class ProductAutocompleteView(AutocompleteRenderMixin, LoginRequiredMixin, autoc
         if self.q:
             result = Product.objects.filter(
                 name__istartswith=self.q).order_by('name')
+        return result
+
+
+class QuotationAutocompleteView(AutocompleteRenderMixin, LoginRequiredMixin, autocomplete.Select2QuerySetView):
+
+    def get_result_label(self, item):
+        return f'{item.quantity} uds de {item.product}'
+
+    def get_queryset(self):
+        result = Quotation.objects.all()
+        if self.q:
+            result = Quotation.objects.filter(
+                product__istartswith=self.q).order_by('product')
         return result
 
 
@@ -149,6 +162,38 @@ class QuotationDetailsCreateView(QuotationDetailsMixin, CreateView):
             return HttpResponseRedirect(reverse_lazy('main:main'))
         else:
             pass
+
+
+class QuotationDetailsCreateManyView(QuotationDetailsMixin, CreateView):
+    form_class = QuotationDetailsForm
+    formset_class = QuotationDetailsFormset
+    success_url = reverse_lazy('main:main')
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        kwargs['formset'] = self.get_formset()
+        return kwargs
+
+    def get_formset_kwargs(self):
+        result = {}
+        if self.request.method == 'POST':
+            result['data'] = self.request.POST
+        return result
+
+    def get_formset(self):
+        return self.formset_class(**self.get_formset_kwargs())
+
+    def post(self, request, *arg, **kwargs):
+        formset = self.get_formset()
+        print(formset.is_valid())
+        if formset.is_valid():
+            for form in formset:
+                if form.is_valid():
+                    form.save()
+            return HttpResponseRedirect(reverse_lazy('main:main'))
+        else:
+            kwargs['formset'] = formset
+            return self.render_to_response(kwargs)
 
 
 class QuotationDetailsListView(QuotationDetailsMixin, ListView):
