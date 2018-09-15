@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 
@@ -103,8 +104,9 @@ class QuotationDetails(CoreModel):
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, blank=True, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2,)
     filename = models.CharField(max_length=100, blank=True, null=True)
-    docfile = models.FileField(upload_to='documents/%Y/%m/%d', blank=True, null=True)
+    docfile = models.FileField(upload_to='static/documents/%Y/%m/%d', blank=True, null=True)
     is_authorized = models.BooleanField(default=False)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f"{self.quotation} costo: {str(self.price)}"

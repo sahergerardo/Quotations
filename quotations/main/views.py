@@ -1,20 +1,31 @@
 from dal import autocomplete
 from django.shortcuts import render
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
-from django.core import serializers
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse
 from main.forms import ProviderForm, ProductForm, QuotationForm, QuotationDetailsForm, QuotationDetailsCreateForm, QuotationDetailsFormset
 from main.mixins import AutocompleteRenderMixin, ManagerRequiredMixin, ApplicantOrManagerRequiredMixin
 from main.models import Provider, Product, Quotation, QuotationDetails
 from django.contrib.auth.decorators import login_required
-import time
 import json
 
 # Functions
+
+
+class CustomLoginView(LoginView):
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if (request.method == 'POST'):
+            if(self.request.user.has_perm('main.is_manager')):
+                return HttpResponseRedirect(reverse_lazy('main:product-list'))
+            return HttpResponseRedirect(reverse_lazy('main:quotation-list'))
+        return response
 
 
 class ProviderAutocompleteView(AutocompleteRenderMixin, LoginRequiredMixin, autocomplete.Select2QuerySetView):
@@ -144,24 +155,16 @@ class QuotationDetailsMixin(LoginRequiredMixin):
 class QuotationDetailsCreateView(QuotationDetailsMixin, CreateView):
     template_name = 'main/quotationdetails_form_create.html'
     form_class = QuotationDetailsCreateForm
+    success_url = reverse_lazy('main:main')
 
     def get_form_kwargs(self):
         kwargs = super(QuotationDetailsCreateView, self).get_form_kwargs()
-        provider = Provider.objects.get(user=self.request.user)
+        provider = self.request.user.provider
         kwargs['provider_data'] = provider
-        path = self.request.path.split('/')
-        aux = int(path[len(path) - 1])
+        aux = self.kwargs.get('pk')
         quotation = Quotation.objects.get(id=aux)
         kwargs['quotation_data'] = quotation
         return kwargs
-
-    def post(self, request, *arg, **kwargs):
-        form = self.get_form()
-        if form.is_valid:
-            form.save()
-            return HttpResponseRedirect(reverse_lazy('main:main'))
-        else:
-            pass
 
 
 class QuotationDetailsCreateManyView(QuotationDetailsMixin, CreateView):

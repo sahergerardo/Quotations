@@ -14,14 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
-from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
-from main.views import RegistroUsuario
+from main.views import RegistroUsuario, CustomLoginView
 
 
 urlpatterns = [
-    re_path(r'^$', RedirectView.as_view(url='/login/'), name='index'),
+    path('', CustomLoginView.as_view(), name='login'),
     path('quotations/', include('main.urls')),
     path('admin/', admin.site.urls),
     # Login/logout
@@ -29,3 +30,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/login/'), name='logout'),
     path('signup/', RegistroUsuario.as_view(), name='signup'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

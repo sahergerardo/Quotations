@@ -8,6 +8,7 @@
 			<td>Proveedor</td>
 			<td>Precio</td>
       <td>Archivo</td>
+      <td>Creado por</td>
 			<td>Administrar</td>
 		</tr>
 
@@ -24,6 +25,7 @@
     <a href="{{ quotation_details.docfile.url }}">{{quotation_details.filename}}</a>
     {% endif %}
     </td>
+    <td>{{ quotation_details.created_by }}</td>
  		<td>
  			{%  if perms.main.is_manager and quotation_details.quotation.is_active %}
               <a href="{% url 'main:quotationdetails-authorize' quotation_details.id %}" class="btn btn-primary">Autorizar</a>
@@ -43,5 +45,4 @@
  {% else %}
   <h4> not exist providers</h4>
  {% endif %}
- {% endblock %} }
-}
+ {% endblock %} 

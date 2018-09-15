@@ -31,7 +31,7 @@ class ManagerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.has_perm('main.is_manager')
 
 
-class ApplicantOrManagerRequiredMixin(UserPassesTestMixin):
+class ApplicantOrManagerRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.has_perm('main.is_applicant') or self.request.user.has_perm('main.is_manager')
 

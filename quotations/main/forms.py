@@ -121,7 +121,7 @@ class QuotationDetailsCreateForm(FormControlWidgetMixin, forms.ModelForm):
         super(QuotationDetailsCreateForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        quotationdetails = super().save(commit=True,)
+        quotationdetails = super().save(commit=False,)
         quotationdetails.provider = self.provider_data
         print(self.provider_data)
         quotationdetails.quotation = self.quotation_data

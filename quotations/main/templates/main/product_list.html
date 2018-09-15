@@ -32,8 +32,12 @@
  		        <td>{{ product.brand }}</td>
  		        <td>{{ product.description }}</td>
  		        <td>
-  			        <a href="{% url 'main:product-update' product.id %}" class="btn btn-primary">Editar</a>
-  			        <a href="{% url 'main:product-delete' product.id %}" class="btn btn-danger">Eliminar</a> 
+  			        <a href='#edit' data-href="{% url 'main:product-update' product.id %}" class='product-update'><i class="ti-pencil" title='Edit' data-toggle="tooltip"
+                        data-placement="top"></i></a> 
+  			        <a href='#' data-href="{% url 'main:product-delete' product.id %}"
+                     class='affnetwork-delete'><i
+                        class="ti-trash" title='Delete'
+                        data-toggle="tooltip" data-placement="top" style='color: red' ></i></a>
   		        </td>
  	        </tr>
  	    {% endfor %}
@@ -43,6 +47,31 @@
         {% else %}
             <h4> </h4>
         {% endif %}
+    <script>
+  function setup_list(ctx) {
+    return function () {
+      var $productupdate = $('.product-update', ctx),
+          $productdelete = $('.product-delete', ctx);
+        $productdelete.confirmation({
+        placement: 'right',
+        onConfirm: function () {
+          var $this = $(this);
+          $.post($this.data('href'), {csrfmiddlewaretoken: Cookies.get('csrftoken')}, function () {
+            $this.parent().parent().remove();
+          });
+          return false;
+      }});
+      $productupdate.click(function () {
+        var $this = $(this);
+        $('.modal-content').load($(this).data('href'), function () {
+          $('#myModal').modal();
+        });
+        return false;
+      });
+    };
+  }
+  $(setup_list(document));
+</script>
     <script>
         $("#search").keyup(function() {
             let qs = $("#search").val()
@@ -61,7 +90,6 @@
             	$('.tr-product').hide();
             	for(let i of data){
                     $('#'+i['id']).show();
-                    newtable(data);
                 }
             }
         })
@@ -73,9 +101,6 @@
         });
         });
 
-    function newtable(data){
-    	//console.log(data[0]['name']);
-    }
     </script>
  {% endblock %} 
 
