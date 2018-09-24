@@ -1,4 +1,8 @@
 {% extends 'base/base.html' %}
+{% load staticfiles %}
+{% block header %}
+   <h3>Cotizaciones</h3>
+{% endblock %}
 {% block content %}
 <table class="table table-bordered">
 	<thead>
@@ -8,7 +12,6 @@
 			<td>Proveedor</td>
 			<td>Precio</td>
       <td>Archivo</td>
-      <td>Creado por</td>
 			<td>Administrar</td>
 		</tr>
 
@@ -22,19 +25,22 @@
  		<td>{{ quotation_details.provider }}</td>
  		<td>{{ quotation_details.price }}</td>
     <td>{% if quotation_details.docfile %}
-    <a href="{{ quotation_details.docfile.url }}">{{quotation_details.filename}}</a>
+    <center><a href="{{ quotation_details.docfile.url }}" class="file_view"><i class="ti-eye" ></i></a></center>
     {% endif %}
     </td>
-    <td>{{ quotation_details.created_by }}</td>
  		<td>
  			{%  if perms.main.is_manager and quotation_details.quotation.is_active %}
-              <a href="{% url 'main:quotationdetails-authorize' quotation_details.id %}" class="btn btn-primary">Autorizar</a>
+              <a href="" data-href="{% url 'main:quotationdetails-authorize' quotation_details.id %}" class="quotation_authorized"><i class="ti-check"></i></a>
  			{% else %}
  			  {% if quotation_details.quotation.is_active %}
   			  <a href="{% url 'main:quotationdetails-update' quotation_details.id%}" class="btn btn-primary">Editar</a>
   			  <a href="{% url 'main:quotationdetails-delete' quotation_details.id%}" class="btn btn-danger">Eliminar</a> 
   			  {% else %}
-  			  <p>Finalizada</p>
+          {% if quotation_details.is_authorized %}
+          <p class="text-success">Autorizada</p>
+          {% else %}
+  			   <p class="text-danger">Rechazada</p>
+          {% endif %}
   			 {% endif %}
   			{% endif %}
   		</td>
@@ -42,7 +48,31 @@
  	{% endfor %}
  </tbody>
 </table>
+<script>
+  function setup_list(ctx) {
+    return function () {
+      var $file_view = $('.file_view', ctx),
+          $quotation_authorized = $('.quotation_authorized', ctx);
+      $quotation_authorized.confirmation({
+        placement: 'right',
+        onConfirm: function () {
+          var $this = $(this);
+          $.post($this.data('href'), {csrfmiddlewaretoken: Cookies.get('csrftoken')}, function () {
+            location.reload();
+          });
+          return false;
+      }});
+      $file_view.click(function () {
+        var $this = $(this);
+        $('#image-content').attr('src', $(this).href);
+        $('#myModal').modal();
+        return false;
+      });
+    };
+  }
+  $(setup_list(document));
+</script>
  {% else %}
-  <h4> not exist providers</h4>
+  <h4> No hay propuestas para esta solicitud</h4>
  {% endif %}
  {% endblock %} 

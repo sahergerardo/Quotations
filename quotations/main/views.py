@@ -92,7 +92,7 @@ class ProductListView(ProductMixin, ListView):
 
 
 class ProductUpdateView(ProductMixin, UpdateView):
-    pass
+   pass
 
 
 class ProductDeleteView(ProductMixin, DeleteView):
@@ -155,7 +155,7 @@ class QuotationDetailsMixin(LoginRequiredMixin):
 class QuotationDetailsCreateView(QuotationDetailsMixin, CreateView):
     template_name = 'main/quotationdetails_form_create.html'
     form_class = QuotationDetailsCreateForm
-    success_url = reverse_lazy('main:main')
+    success_url = reverse_lazy('main:quotation-list')
 
     def get_form_kwargs(self):
         kwargs = super(QuotationDetailsCreateView, self).get_form_kwargs()
@@ -164,17 +164,30 @@ class QuotationDetailsCreateView(QuotationDetailsMixin, CreateView):
         aux = self.kwargs.get('pk')
         quotation = Quotation.objects.get(id=aux)
         kwargs['quotation_data'] = quotation
+        kwargs['user_data'] = self.request.user
         return kwargs
+
+    def post(self, request, *arg, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            self.object = form.save()
+            return HttpResponseRedirect(reverse_lazy('main:quotation-list'))
+        kwargs['form'] = form
+        return self.render_to_response(kwargs)
 
 
 class QuotationDetailsCreateManyView(QuotationDetailsMixin, CreateView):
     form_class = QuotationDetailsForm
     formset_class = QuotationDetailsFormset
-    success_url = reverse_lazy('main:main')
+    success_url = reverse_lazy('main:quotation-list')
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         kwargs['formset'] = self.get_formset()
+        aux = self.kwargs.get('pk')
+        quotation = Quotation.objects.get(id=aux)
+        kwargs['quotation_data'] = quotation
+        kwargs['user_data'] = self.request.user
         return kwargs
 
     def get_formset_kwargs(self):
@@ -183,12 +196,15 @@ class QuotationDetailsCreateManyView(QuotationDetailsMixin, CreateView):
             result['data'] = self.request.POST
         return result
 
+    def get_form_kwargs(self):
+        kwargs = super(QuotationDetailsCreateManyView, self).get_form_kwargs()
+        return kwargs
+
     def get_formset(self):
         return self.formset_class(**self.get_formset_kwargs())
 
     def post(self, request, *arg, **kwargs):
         formset = self.get_formset()
-        print(formset.is_valid())
         if formset.is_valid():
             for form in formset:
                 if form.is_valid():
@@ -200,7 +216,11 @@ class QuotationDetailsCreateManyView(QuotationDetailsMixin, CreateView):
 
 
 class QuotationDetailsListView(QuotationDetailsMixin, ListView):
-    pass
+    def get_queryset(self):
+        id_quotation = self.kwargs.get('id_quotation')
+        quotation = Quotation.objects.get(id=id_quotation)
+        queryset = QuotationDetails.objects.filter(quotation=quotation)
+        return queryset
 
 
 class QuotationDetailsUpdateView(QuotationDetailsMixin, UpdateView):
@@ -242,5 +262,45 @@ def list_product(request):
         data = json.dumps(results)
     else:
         data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+@login_required
+def list_provider(request):
+    if request.is_ajax():
+        q = request.GET.get('qs', '').capitalize()
+        search_qs = Provider.objects.filter(contact_name__startswith=q)
+        results = []
+        for r in search_qs:
+            results.append({'id': r.id})
+        data = json.dumps(results)
+    else:
+        q = request.GET.get('qs', '').capitalize()
+        search_qs = Provider.objects.filter(contact_name__startswith=q)
+        results = []
+        for r in search_qs:
+            results.append({'id': r.id})
+        data = json.dumps(results)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+@login_required
+def list_quotation(request):
+    if request.is_ajax():
+        q = request.GET.get('qs', '').capitalize()
+        search_qs = Quotation.objects.filter(product__startswith=q)
+        results = []
+        for r in search_qs:
+            results.append({'id': r.id})
+        data = json.dumps(results)
+    else:
+        q = request.GET.get('qs', '').capitalize()
+        search_qs = Quotation.objects.filter(product__startswith=q)
+        results = []
+        for r in search_qs:
+            results.append({'id': r.id})
+        data = json.dumps(results)
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)

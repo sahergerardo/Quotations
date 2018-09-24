@@ -1,8 +1,17 @@
 {% extends 'base/base.html' %}
 {% block content %}
+<div class="container">
 <form method="post">
 	{% csrf_token %}
-	{{ form.as_p }}
-	<button type="submit"> Guardar</button>
+	{{ form.as_table }}
+	<p>
+		
+	</p>
+	<center>
+	<button type="submit" class="btn btn-primary"> Guardar</button>
+	<a href="{% url 'main:product-list' %}" class="btn btn-info"> Cancelar </a>
+	</center>
 </form>
-{% endblock %}3
+</div>
+{{form.media}}
+{% endblock %}

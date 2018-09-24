@@ -98,8 +98,23 @@ class QuotationDetailsForm(FormControlWidgetMixin, forms.ModelForm):
             'provider': autocomplete.ModelSelect2(url='main:autocomplete-provider'),
         }
 
+        def __init__(self, *args, **kwargs):
+            print("hola")
+            self.quotation_data = kwargs.pop('quotation_data', None)
+            print(self.quotation_data)
+            super(QuotationDetailsCreateForm, self).__init__(*args, **kwargs)
 
-QuotationDetailsFormset = forms.formset_factory(QuotationDetailsForm, can_delete=True)
+        def save(self, commit=True):
+            quotationdetails = super().save(commit=False,)
+            quotationdetails.quotation = self.quotation_data
+            quotationdetails.filename = f"{self.provider_data.name}_{self.quotation_data}"
+            if commit:
+                quotationdetails.save()
+            return quotationdetails
+
+
+QuotationDetailsFormset = forms.inlineformset_factory(Quotation, QuotationDetails, form=QuotationDetailsForm,
+                                                      can_delete=True, extra=0)
 
 
 class QuotationDetailsCreateForm(FormControlWidgetMixin, forms.ModelForm):
@@ -118,14 +133,15 @@ class QuotationDetailsCreateForm(FormControlWidgetMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.provider_data = kwargs.pop('provider_data', None)
         self.quotation_data = kwargs.pop('quotation_data', None)
+        self.user_data = kwargs.pop('user_data', None)
         super(QuotationDetailsCreateForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         quotationdetails = super().save(commit=False,)
         quotationdetails.provider = self.provider_data
-        print(self.provider_data)
         quotationdetails.quotation = self.quotation_data
         quotationdetails.filename = f"{self.provider_data.name}_{self.quotation_data}"
+        quotationdetails.created_by = self.user_data
         if commit:
             quotationdetails.save()
         return quotationdetails

@@ -3,11 +3,18 @@
 	<h3>Productos</h3>
 	{% endblock %}
 {% block content %}
-
+<div class="container">
 <form method="post">
 	{% csrf_token %}
 	{{ form.as_table }}
-	<button type="submit"> Guardar</button>
+	<p>
+		
+	</p>
+	<center>
+	<button type="submit" class="btn btn-primary"> Guardar</button>
+	<a href="{% url 'main:product-list' %}" class="btn btn-info"> Cancelar </a>
+	</center>
 </form>
+</div>
  {{ form.media }}
 {% endblock %}

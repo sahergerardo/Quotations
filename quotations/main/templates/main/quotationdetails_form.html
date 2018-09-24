@@ -10,9 +10,18 @@
                 {% for form in formset %}
                 
                     <div enctype="multipart/form-data">
-                        <div data-formset-form enctype="multipart/form-data">
-                        	{{ form }} 
-                        <a data-formset-delete-button>Delete form</a>
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <p>Cotizacion para</p>
+                            {{ formset.quotation_data }} 
+                            <p><br>Provedor:</p>
+                            {{formset.provider_data}}
+                            <p><br>Precio Propuesto</p>
+                            {{ form.price}}
+                            <p><br>añadir archivo (opcional)</p>
+                            <p>{{ form.docfile}}</p>
+                            <button type="submit"> Guardar</button>
+                        </form>
                     </div>
                 </div>
                 {% endfor %}

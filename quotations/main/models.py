@@ -106,7 +106,7 @@ class QuotationDetails(CoreModel):
     filename = models.CharField(max_length=100, blank=True, null=True)
     docfile = models.FileField(upload_to='static/documents/%Y/%m/%d', blank=True, null=True)
     is_authorized = models.BooleanField(default=False)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"{self.quotation} costo: {str(self.price)}"

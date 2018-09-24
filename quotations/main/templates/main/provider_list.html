@@ -1,5 +1,18 @@
 {% extends 'base/base.html' %}
+{% block header %}
+   <h3>Proveedores</h3>
+{% endblock %}
 {% block content %}
+<form method="GET" autocomplete="off">
+    	{% csrf_token %}
+    <div class="form-group row">
+    <label class=col-1 col-form-label" for="textSearch">Buscar</label>
+    <input id="search" name="name" type="text" class="form-control col-6" id="textSearch" placeholder="nombre">
+    <label>________</label>
+    <a href="{% url 'main:provider-create' %}"><input type="button" value="Crear nuevo" class="btn btn-success"></a>
+
+  </div>
+  	</form>
 <table class="table table-bordered">
 	<thead>
  	    <tr>
@@ -15,15 +28,21 @@
  <tbody>
  	{% if object_list %}
  	{% for provider in object_list %}
- 	<tr>
+ 	<tr id="{{provider.id}}" class='tr-provider'>
  		<td>{{ provider.id }}</td>
  		<td>{{ provider.contact_name }}</td>
   		<td>{{ provider.telephone1 }}</td>
   		<td>{{ provider.email }}</td>
   		<td>{{ provider.money_owed }}</td>
   		<td>
-  			<a href="{% url 'main:provider-update' provider.id %}" class="btn btn-primary">Editar</a>
-  			<a href="{% url 'main:provider-delete' provider.id %}" class="btn btn-danger">Eliminar</a> 
+  			<a href="{% url 'main:provider-update' provider.id %}" data-href="{% url 'main:provider-update' provider.id %}" class='provider-update'><i class="ti-pencil" title='Editar' data-toggle="tooltip"
+                        data-placement="top"></i></a> 
+  			<a href='#' data-href="{% url 'main:provider-delete' provider.id %}"
+            class='provider-delete' data-placement="top" data-btn-ok-label="Si" data-btn-ok-class="btn-success"
+            data-btn-cancel-label="No" data-btn-cancel-class="btn-danger"
+            data-title="¿Estas seguro? " data-content="No podras deshacer esta accion" ><i
+            class="ti-trash" title='Borrar'
+            data-toggle="tooltip"  style='color: red;' ></i></a>
   		</td>
  	</tr>
  	{% endfor %}
@@ -31,8 +50,53 @@
  {% else %}
   <h4> not exist providers</h4>
  {% endif %}
+ <script>
+  function setup_list(ctx) {
+    return function () {
+      var $providerdelete = $('.provider-delete', ctx);
+        $providerdelete.confirmation({
+        placement: 'right',
+        onConfirm: function () {
+          var $this = $(this);
+          $.post($this.data('href'), {csrfmiddlewaretoken: Cookies.get('csrftoken')}, function () {
+            $this.parent().parent().remove();
+          });
+          return false;
+      }});
+    };
+  }
+  $(setup_list(document));
+</script>
  </table>
-{% endblock %}
-{% block footer %}
-	<a href="/logout/" class="footer">Salir</a>
+  <h4 id='no-exist' style='display:none;'>ningun proveedor concuerda con tu busqueda</h4>
+ <script>
+        $("#search").keyup(function() {
+            let qs = $("#search").val()
+            $.ajax({
+                url: '{% url "main:provider-ajax" %}',
+                type: 'GET',
+                dataType: 'json',
+                data: {"qs":qs},
+            })
+            .done(function(data) {
+            if(jQuery.isEmptyObject(data)){
+            	$('#no-exist').show();
+            	$('.tr-provider').hide();
+            }else{
+            	$('#no-exist').hide();
+            	$('.tr-provider').hide();
+            	for(let i of data){
+                    $('#'+i['id']).show();
+                }
+            }
+        })
+        .fail(function() {
+            console.log("error");
+        })
+        .always(function() {
+            console.log("complete");
+        });
+        });
+
+    </script>
 {% endblock %}

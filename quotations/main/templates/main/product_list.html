@@ -32,12 +32,14 @@
  		        <td>{{ product.brand }}</td>
  		        <td>{{ product.description }}</td>
  		        <td>
-  			        <a href='#edit' data-href="{% url 'main:product-update' product.id %}" class='product-update'><i class="ti-pencil" title='Edit' data-toggle="tooltip"
+  			        <a href="{% url 'main:product-update' product.id %}" data-href="{% url 'main:product-update' product.id %}" class='product-update'><i class="ti-pencil" title='Editar' data-toggle="tooltip"
                         data-placement="top"></i></a> 
   			        <a href='#' data-href="{% url 'main:product-delete' product.id %}"
-                     class='affnetwork-delete'><i
-                        class="ti-trash" title='Delete'
-                        data-toggle="tooltip" data-placement="top" style='color: red' ></i></a>
+                     class='product-delete' data-placement="top" data-btn-ok-label="Si" data-btn-ok-class="btn-success"
+                     data-btn-cancel-label="No" data-btn-cancel-class="btn-danger"
+                     data-title="¿Estas seguro? " data-content="No podras deshacer esta accion" ><i
+                        class="ti-trash" title='Borrar'
+                        data-toggle="tooltip"  style='color: red;' ></i></a>
   		        </td>
  	        </tr>
  	    {% endfor %}
@@ -50,8 +52,7 @@
     <script>
   function setup_list(ctx) {
     return function () {
-      var $productupdate = $('.product-update', ctx),
-          $productdelete = $('.product-delete', ctx);
+      var $productdelete = $('.product-delete', ctx);
         $productdelete.confirmation({
         placement: 'right',
         onConfirm: function () {
@@ -61,13 +62,6 @@
           });
           return false;
       }});
-      $productupdate.click(function () {
-        var $this = $(this);
-        $('.modal-content').load($(this).data('href'), function () {
-          $('#myModal').modal();
-        });
-        return false;
-      });
     };
   }
   $(setup_list(document));

@@ -24,9 +24,9 @@ urlpatterns = [
         path('delete/<int:pk>/', views.QuotationDeleteView.as_view(), name='quotation-delete'),
     ])),
     path('quotationdetails/', include([
-        path('list/', views.QuotationDetailsListView.as_view(), name='quotationdetails-list'),
+        path('list/<int:id_quotation>', views.QuotationDetailsListView.as_view(), name='quotationdetails-list'),
         path('create/<int:pk>', views.QuotationDetailsCreateView.as_view(), name='quotationdetails-create'),
-        path('create/', views.QuotationDetailsCreateManyView.as_view(), name='quotationdetails-create-many'),
+        path('create_many/<int:pk>', views.QuotationDetailsCreateManyView.as_view(), name='quotationdetails-create-many'),
         path('update/<int:pk>/', views.QuotationDetailsUpdateView.as_view(), name='quotationdetails-update'),
         path('delete/<int:pk>/', views.QuotationDetailsDeleteView.as_view(), name='quotationdetails-delete'),
         path('authorize/<int:id_quotation_details>/', views.quotation_authorize, name='quotationdetails-authorize'),
@@ -40,5 +40,6 @@ urlpatterns = [
              name='autocomplete-quotation'),
     ])),
     path('products.json', views.list_product, name='product-ajax'),
+    path('provider.json', views.list_provider, name='provider-ajax'),
+    path('quotation.json', views.list_quotation, name='quotation-ajax'),
 ]
-

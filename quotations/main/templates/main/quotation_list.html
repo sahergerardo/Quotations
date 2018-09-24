@@ -1,5 +1,11 @@
 {% extends 'base/base.html' %}
+{% block header %}
+   <h3>Solicitudes</h3>
+{% endblock %}
 {% block content %}
+<div><a href="{% url 'main:provider-create' %}"><input type="button" value="Crear nuevo" class="btn btn-success"></a>
+<div><p></p></div>
+</div>
 <table class="table table-bordered">
 	<thead>
  	<tr>
@@ -30,8 +36,17 @@
  			{% endif %}
  		</td>
  		<td>
-  			<a href="{% url 'main:quotation-update' quotation.id %}" class="btn btn-primary">Editar</a>
-  			<a href="{% url 'main:quotation-delete' quotation.id %}" class="btn btn-danger">Eliminar</a> 
+  			<a href="{% url 'main:quotation-update' quotation.id %}" data-href="{% url 'main:quotation-update' quotation.id %}" class='quotation-update'><i class="ti-pencil" title='Editar' data-toggle="tooltip"
+                        data-placement="top"></i></a> 
+  			<a href='#' data-href="{% url 'main:quotation-delete' quotation.id %}"
+            class='quotation-delete' data-placement="top" data-btn-ok-label="Si" data-btn-ok-class="btn-success"
+            data-btn-cancel-label="No" data-btn-cancel-class="btn-danger"
+            data-title="¿Estas seguro? " data-content="No podras deshacer esta accion" ><i
+            class="ti-trash" title='Borrar'
+            data-toggle="tooltip"  style='color: red;' ></i></a>
+            <a href="{% url 'main:quotationdetails-list' quotation.id %}" data-href="{% url 'main:quotation-update' quotation.id %}" class='quotation-update'><i class="ti-view-list-alt" title='Ver Propuestas' data-toggle="tooltip"
+                        data-placement="top" style="color:blue;"></i></a> 
+
   		</td>
  	</tr>
  		{% else %}
@@ -54,4 +69,21 @@
  {% else %}
   <h4> not exist providers</h4>
  {% endif %}
+ <script>
+  function setup_list(ctx) {
+    return function () {
+      var $quotationdelete = $('.quotation-delete', ctx);
+        $quotationdelete.confirmation({
+        placement: 'right',
+        onConfirm: function () {
+          var $this = $(this);
+          $.post($this.data('href'), {csrfmiddlewaretoken: Cookies.get('csrftoken')}, function () {
+            $this.parent().parent().remove();
+          });
+          return false;
+      }});
+    };
+  }
+  $(setup_list(document));
+</script>
 {% endblock %} 
